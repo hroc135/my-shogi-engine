@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/hroc135/my-shogi-engine/domain/model"
 )
 
 const (
@@ -13,6 +15,8 @@ const (
 )
 
 func run() {
+	position := model.Position{}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -23,6 +27,8 @@ func run() {
 
 		command := split[0]
 		switch command {
+		case "d": // for debugging
+			fmt.Print(position.BoardToString())
 		case "usi":
 			fmt.Println("id name hroc135")
 			fmt.Println("id author hroc135")
