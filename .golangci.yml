@@ -1,0 +1,10 @@
+version: "2.3.1"
+
+linters:
+  default: standard
+run:
+  timeout: 1m
+formatters:
+  enable:
+    - gofmt
+    - goimports
