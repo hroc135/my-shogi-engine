@@ -29,19 +29,27 @@ func run() {
 			fmt.Printf("option name %s type check default true\n", USIPonder)
 			fmt.Printf("option name %s type spin default 256\n", USIHash)
 			fmt.Println("usiok")
-			os.Stdout.Sync()
+			if err := os.Stdout.Sync(); err != nil {
+				fmt.Println(err)
+			}
 		case "isready":
 			fmt.Println("readyok")
-			os.Stdout.Sync()
+			if err := os.Stdout.Sync(); err != nil {
+				fmt.Println(err)
+			}
 		case "usinewgame", "setoption", "position", "stop", "ponderhit", "gameover":
 		case "go":
 			fmt.Println("bestmove resign")
-			os.Stdout.Sync()
+			if err := os.Stdout.Sync(); err != nil {
+				fmt.Println(err)
+			}
 		case "quit":
 			return
 		default:
 			fmt.Printf("info string Unsupported command: %s\n", command)
-			os.Stdout.Sync()
+			if err := os.Stdout.Sync(); err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 
