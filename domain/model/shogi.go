@@ -87,10 +87,10 @@ func (p Position) BoardToString() string {
 	var sb strings.Builder
 	sb.WriteString(rowSeperator)
 	sb.WriteByte('\n')
-	for row := range BoardSize {
+	for rank := range BoardSize {
 		sb.WriteByte('|')
-		for col := BoardSize - 1; col >= 0; col-- {
-			sb.WriteString(p.Board[row][col].ToString())
+		for file := BoardSize - 1; file >= 0; file-- {
+			sb.WriteString(p.Board[rank][file].ToString())
 			sb.WriteByte('|')
 		}
 		sb.WriteByte('\n')

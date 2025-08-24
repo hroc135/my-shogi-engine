@@ -4,4 +4,4 @@ build:
 	go build ./
 
 run: build
-	./$(my-shogi-engine.exe)
+	./$(EXECUTABLE_FILE)
