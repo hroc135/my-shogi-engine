@@ -43,7 +43,27 @@ func run() {
 			if err := os.Stdout.Sync(); err != nil {
 				fmt.Println(err)
 			}
-		case "usinewgame", "setoption", "position", "stop", "ponderhit", "gameover":
+		case "usinewgame", "setoption", "stop", "ponderhit", "gameover":
+		case "position":
+			if len(split) < 2 {
+				fmt.Println("invalid command")
+				continue
+			}
+			// var nextIdx int
+			switch split[1] {
+			case "startpos":
+				position = model.SetPosition(model.StartPosSFEN)
+				// nextIdx = 2
+			case "sfen":
+				sfen := strings.Join(split[2:], " ")
+				position = model.SetPosition(sfen)
+				// nextIdx = 6
+			default:
+				fmt.Println("invalid command")
+				continue
+			}
+
+			// todo: 指し手のパース
 		case "go":
 			fmt.Println("bestmove resign")
 			if err := os.Stdout.Sync(); err != nil {
