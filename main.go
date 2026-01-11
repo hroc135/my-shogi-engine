@@ -14,7 +14,7 @@ const (
 	USIHash   = "USI_Hash"
 )
 
-func run() {
+func main() {
 	position := model.Position{}
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -26,10 +26,10 @@ func run() {
 		}
 
 		command := split[0]
-		switch command {
+		switch model.USICommand(command) {
 		case "d": // for debugging
 			fmt.Print(position.BoardToString())
-		case "usi":
+		case model.USICommandUSI:
 			fmt.Println("id name hroc135")
 			fmt.Println("id author hroc135")
 			fmt.Printf("option name %s type check default true\n", USIPonder)
@@ -38,23 +38,23 @@ func run() {
 			if err := os.Stdout.Sync(); err != nil {
 				fmt.Println(err)
 			}
-		case "isready":
+		case model.USICommandIsReady:
 			fmt.Println("readyok")
 			if err := os.Stdout.Sync(); err != nil {
 				fmt.Println(err)
 			}
-		case "usinewgame", "setoption", "stop", "ponderhit", "gameover":
-		case "position":
+		case model.USICommandUSINewGame, model.USICommandSetOption, model.USICommandStop, model.USICommandPonderhit, model.USICommandGameover:
+		case model.USICommandPosition:
 			if len(split) < 2 {
 				fmt.Println("invalid command")
 				continue
 			}
 			// var nextIdx int
-			switch split[1] {
-			case "startpos":
+			switch model.USIPositionSubcommand(split[1]) {
+			case model.USIPositionSubcommandStartpos:
 				position = model.SetPosition(model.StartPosSFEN)
 				// nextIdx = 2
-			case "sfen":
+			case model.USIPositionSubcommandSFEN:
 				sfen := strings.Join(split[2:], " ")
 				position = model.SetPosition(sfen)
 				// nextIdx = 6
@@ -64,13 +64,23 @@ func run() {
 			}
 
 			// todo: 指し手のパース
-		case "go":
+		case model.USICommandGo:
 			fmt.Println("bestmove resign")
 			if err := os.Stdout.Sync(); err != nil {
 				fmt.Println(err)
 			}
-		case "quit":
+		case model.USICommandQuit:
 			return
+		case model.USICommandGenerateMove:
+			ch := make(chan model.Move)
+			go func() {
+				position.Generate(ch)
+				close(ch)
+			}()
+			for m := range ch {
+				fmt.Printf("%s ", m.ToString())
+			}
+			fmt.Println()
 		default:
 			fmt.Printf("info string Unsupported command: %s\n", command)
 			if err := os.Stdout.Sync(); err != nil {
@@ -82,8 +92,4 @@ func run() {
 	if err := scanner.Err(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error during scan: %v\n", err)
 	}
-}
-
-func main() {
-	run()
 }
